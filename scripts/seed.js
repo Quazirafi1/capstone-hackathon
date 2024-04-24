@@ -1,161 +1,400 @@
 const { db } = require('@vercel/postgres');
 const {
-  invoices,
-  customers,
-  revenue,
+  questions,
   users,
+  actions,
+  answers,
+  chosenImpacts,
+  impacts,
+  leadTos,
+  keywords,
+  risks,
+  selectedImpacts,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
 async function seedUsers(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
     // Create the "users" table if it doesn't exist
+
+
     const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
+      CREATE TABLE IF NOT EXISTS Users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        likelihood_thres INT DEFAULT 0,
+        impact_thres INT DEFAULT 0,
+        cost_thres INT DEFAULT 0
       );
     `;
 
-    console.log(`Created "users" table`);
+    console.log(`Created "User" table`);
 
-    // Insert data into the "users" table
     const insertedUsers = await Promise.all(
       users.map(async (user) => {
+        console.log(user)
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
-        ON CONFLICT (id) DO NOTHING;
+          INSERT INTO Users (id, username, email, password, likelihood_thres, impact_thres, cost_thres)
+          VALUES (${user.id}, ${user.username}, ${user.email}, ${hashedPassword}, ${user.likelihood_thres}, ${user.impact_thres}, ${user.cost_thres})
+          ON CONFLICT (id) DO NOTHING;
       `;
       }),
     );
 
-    console.log(`Seeded ${insertedUsers.length} users`);
+    console.log(`Seeded ${insertedUsers.length} User`);
 
     return {
       createTable,
       users: insertedUsers,
     };
   } catch (error) {
-    console.error('Error seeding users:', error);
+    console.error('Error seeding User:', error);
     throw error;
   }
 }
 
-async function seedInvoices(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+async function seedQuestions(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
 
-    // Create the "invoices" table if it doesn't exist
     const createTable = await client.sql`
-    CREATE TABLE IF NOT EXISTS invoices (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    customer_id UUID NOT NULL,
-    amount INT NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    date DATE NOT NULL
-  );
-`;
-
-    console.log(`Created "invoices" table`);
-
-    // Insert data into the "invoices" table
-    const insertedInvoices = await Promise.all(
-      invoices.map(
-        (invoice) => client.sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
-    );
-
-    console.log(`Seeded ${insertedInvoices.length} invoices`);
-
-    return {
-      createTable,
-      invoices: insertedInvoices,
-    };
-  } catch (error) {
-    console.error('Error seeding invoices:', error);
-    throw error;
-  }
-}
-
-async function seedCustomers(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-    // Create the "customers" table if it doesn't exist
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS customers (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        image_url VARCHAR(255) NOT NULL
+      CREATE TABLE IF NOT EXISTS Question (
+        id SERIAL PRIMARY KEY,
+        question VARCHAR(255) NOT NULL
       );
     `;
 
-    console.log(`Created "customers" table`);
+    console.log(`Created "Question" table`);
 
-    // Insert data into the "customers" table
-    const insertedCustomers = await Promise.all(
-      customers.map(
-        (customer) => client.sql`
-        INSERT INTO customers (id, name, email, image_url)
-        VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
+    const insertedQuestions = await Promise.all(
+      questions.map(async (question) => {
+        return client.sql`
+          INSERT INTO Question (id, question)
+          VALUES (${question.id}, ${question.question})
+          ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
     );
 
-    console.log(`Seeded ${insertedCustomers.length} customers`);
+    console.log(`Seeded ${insertedQuestions.length} Question`);
 
     return {
       createTable,
-      customers: insertedCustomers,
+      questions: insertedQuestions,
     };
   } catch (error) {
-    console.error('Error seeding customers:', error);
+    console.error('Error seeding Question:', error);
     throw error;
   }
 }
 
-async function seedRevenue(client) {
-  try {
-    // Create the "revenue" table if it doesn't exist
+async function seedAnswers(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
     const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS revenue (
-        month VARCHAR(4) NOT NULL UNIQUE,
-        revenue INT NOT NULL
+        CREATE TABLE IF NOT EXISTS Answer (
+          qid INT,
+          uid INT,
+          answer VARCHAR(255),
+          FOREIGN KEY (qid) REFERENCES Question(id),
+          FOREIGN KEY (uid) REFERENCES Users(id),
+          PRIMARY KEY (qid, uid)
       );
     `;
 
-    console.log(`Created "revenue" table`);
+    console.log(`Created "Answer" table`);
 
-    // Insert data into the "revenue" table
-    const insertedRevenue = await Promise.all(
-      revenue.map(
-        (rev) => client.sql`
-        INSERT INTO revenue (month, revenue)
-        VALUES (${rev.month}, ${rev.revenue})
-        ON CONFLICT (month) DO NOTHING;
-      `,
-      ),
+    const insertedAnswers = await Promise.all(
+      answers.map(async (answer) => {
+        return client.sql`
+          INSERT INTO Answer (qid, uid, answer)
+          VALUES (${answer.qid}, ${answer.uid}, ${answer.answer})
+          ON CONFLICT (qid, uid) DO NOTHING;
+      `;
+      }),
     );
 
-    console.log(`Seeded ${insertedRevenue.length} revenue`);
+    console.log(`Seeded ${insertedAnswers.length} Answer`);
 
     return {
       createTable,
-      revenue: insertedRevenue,
+      answers: insertedAnswers,
     };
   } catch (error) {
-    console.error('Error seeding revenue:', error);
+    console.error('Error seeding Answer:', error);
+    throw error;
+  }
+}
+
+async function seedImpacts(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS Impact (
+          id SERIAL PRIMARY KEY,
+          title VARCHAR(255),
+          description TEXT,
+          pos_neg BOOLEAN,
+          dimension VARCHAR(255)
+      );
+    `;
+
+    console.log(`Created "Impact" table`);
+
+    const insertedImpacts = await Promise.all(
+      impacts.map(async (impact) => {
+        return client.sql`
+          INSERT INTO Impact (id, title, description, pos_neg, dimension)
+          VALUES (${impact.id}, ${impact.title}, ${impact.description}, ${impact.pos_neg}, ${impact.dimension})
+          ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedImpacts.length} Impact`);
+
+    return {
+      createTable,
+      impacts: insertedImpacts,
+    };
+  } catch (error) {
+    console.error('Error seeding Impact:', error);
+    throw error;
+  }
+}
+
+async function seedKeywords(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS Keyword (
+          word VARCHAR(50),
+          iid INT,
+          FOREIGN KEY (iid) REFERENCES Impact(id),
+          PRIMARY KEY (word, iid)
+      );
+    `;
+
+    console.log(`Created "Keyword" table`);
+
+    const insertedKeywords = await Promise.all(
+      keywords.map(async (keyword) => {
+        return client.sql`
+          INSERT INTO Keyword (word, iid)
+          VALUES (${keyword.word}, ${keyword.iid})
+          ON CONFLICT (word, iid) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedKeywords.length} Keyword`);
+
+    return {
+      createTable,
+      keywords: insertedKeywords,
+    };
+  } catch (error) {
+    console.error('Error seeding Keyword:', error);
+    throw error;
+  }
+}
+
+async function seedChosenImpacts(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS ChosenImpact (
+          id SERIAL PRIMARY KEY,
+          uid INT,
+          iid INT,
+          temp_category VARCHAR(50),
+          likelihood INT,
+          impactfulness INT,
+          FOREIGN KEY (uid) REFERENCES Users(id),
+          FOREIGN KEY (iid) REFERENCES Impact(id)
+      );
+    `;
+
+    console.log(`Created "ChosenImpact" table`);
+
+    const insertedChosenImpacts = await Promise.all(
+      chosenImpacts.map(async (chosenImpact) => {
+        return client.sql`
+          INSERT INTO ChosenImpact (id, uid, iid, temp_category, likelihood, impactfulness)
+          VALUES (${chosenImpact.id}, ${chosenImpact.uid}, ${chosenImpact.iid}, ${chosenImpact.temp_category}, ${chosenImpact.likelihood}, ${chosenImpact.impactfulness})
+          ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedChosenImpacts.length} ChosenImpact`);
+
+    return {
+      createTable,
+      chosenImpacts: insertedChosenImpacts,
+    };
+  } catch (error) {
+    console.error('Error seeding ChosenImpact:', error);
+    throw error;
+  }
+}
+
+async function seedLeadTos(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS LeadTo (
+          id SERIAL PRIMARY KEY,
+          ciid1 INT,
+          ciid2 INT,
+          FOREIGN KEY (ciid1) REFERENCES ChosenImpact(id),
+          FOREIGN KEY (ciid2) REFERENCES ChosenImpact(id)
+      );
+    `;
+
+    console.log(`Created "LeadTo" table`);
+
+    const insertedLeadTos = await Promise.all(
+      leadTos.map(async (leadTo) => {
+        return client.sql`
+          INSERT INTO LeadTo (id, ciid1, ciid2)
+          VALUES (${leadTo.id}, ${leadTo.ciid1}, ${leadTo.ciid2})
+          ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedLeadTos.length} LeadTo`);
+
+    return {
+      createTable,
+      leadTos: insertedLeadTos,
+    };
+  } catch (error) {
+    console.error('Error seeding LeadTo:', error);
+    throw error;
+  }
+}
+
+async function seedSelectedImpacts(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS SelectedImpact (
+          id SERIAL PRIMARY KEY,
+          ciid INT,
+          FOREIGN KEY (ciid) REFERENCES ChosenImpact(id)
+      );
+    `;
+
+    console.log(`Created "SelectedImpact" table`);
+
+    const insertedSelectedImpacts = await Promise.all(
+      selectedImpacts.map(async (selectedImpact) => {
+        return client.sql`
+          INSERT INTO SelectedImpact (id, ciid)
+          VALUES (${selectedImpact.id}, ${selectedImpact.ciid})
+          ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedSelectedImpacts.length} SelectedImpact`);
+
+    return {
+      createTable,
+      selectedImpacts: insertedSelectedImpacts,
+    };
+  } catch (error) {
+    console.error('Error seeding SelectedImpact:', error);
+    throw error;
+  }
+}
+
+async function seedRisks(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS Risk (
+          id SERIAL PRIMARY KEY,
+          siid INT,
+          description TEXT,
+          FOREIGN KEY (siid) REFERENCES SelectedImpact(id)
+      );
+    `;
+
+    console.log(`Created "Risk" table`);
+
+    const insertedRisks = await Promise.all(
+      risks.map(async (risk) => {
+        return client.sql`
+          INSERT INTO Risk (id, siid, description)
+          VALUES (${risk.id}, ${risk.siid}, ${risk.description})
+          ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedRisks.length} Risk`);
+
+    return {
+      createTable,
+      risks: insertedRisks,
+    };
+  } catch (error) {
+    console.error('Error seeding Risk:', error);
+    throw error;
+  }
+}
+
+async function seedActions(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS Action (
+          id SERIAL,
+          siid INT,
+          description TEXT,
+          cost_inaction INT,
+          cost_action INT,
+          selected BOOLEAN,
+          FOREIGN KEY (siid) REFERENCES SelectedImpact(id),
+          PRIMARY KEY (id)
+      );
+    `;
+
+    console.log(`Created "Action" table`);
+
+    const insertedActions = await Promise.all(
+      actions.map(async (action) => {
+        return client.sql`
+          INSERT INTO action (id, siid, description, cost_inaction, cost_action, selected)
+          VALUES (${action.id}, ${action.siid}, ${action.description}, ${action.cost_inaction}, ${action.cost_action}, ${action.selected})
+          ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedActions.length} Action`);
+
+    return {
+      createTable,
+      actions: insertedActions,
+    };
+  } catch (error) {
+    console.error('Error seeding Action:', error);
     throw error;
   }
 }
@@ -164,9 +403,15 @@ async function main() {
   const client = await db.connect();
 
   await seedUsers(client);
-  await seedCustomers(client);
-  await seedInvoices(client);
-  await seedRevenue(client);
+  await seedQuestions(client);
+  await seedAnswers(client);
+  await seedImpacts(client);
+  await seedKeywords(client);
+  await seedChosenImpacts(client);
+  await seedLeadTos(client);
+  await seedSelectedImpacts(client);
+  await seedRisks(client);
+  await seedActions(client);
 
   await client.end();
 }
