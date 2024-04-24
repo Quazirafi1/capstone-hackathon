@@ -1,4 +1,4 @@
-'use server';
+/* 'use server';
 
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
@@ -137,4 +137,154 @@ export async function authenticate(
     }
     throw error;
   }
+}
+ */
+
+
+import { sql } from '@vercel/postgres';
+
+// Typescript interfaces from definitions.ts
+import {
+  User,
+  Question,
+  Answer,
+  Impact,
+  Keyword,
+  ChosenImpact,
+  LeadTo,
+  SelectedImpact,
+  Risk,
+  Action
+} from './definitions';
+
+// ========== Insert Functions ==========
+
+// Insert a new user
+export async function insertUser(user: Omit<User, 'id'>, client: any): Promise<void> {
+  await client.sql`
+    INSERT INTO Users (username, email, password, likelihood_thres, impact_thres, cost_thres)
+    VALUES (${user.username}, ${user.email}, ${user.password}, ${user.likelihood_thres}, ${user.impact_thres}, ${user.cost_thres});
+  `;
+}
+
+// Insert a new question
+export async function insertQuestion(question: Omit<Question, 'id'>, client: any): Promise<void> {
+  await client.sql`
+    INSERT INTO Question (question)
+    VALUES (${question.question});
+  `;
+}
+
+// Insert a new answer
+export async function insertAnswer(answer: Answer, client: any): Promise<void> {
+  await client.sql`
+    INSERT INTO Answer (qid, uid, answer)
+    VALUES (${answer.qid}, ${answer.uid}, ${answer.answer});
+  `;
+}
+
+// Insert a new impact
+export async function insertImpact(impact: Omit<Impact, 'id'>, client: any): Promise<void> {
+  await client.sql`
+    INSERT INTO Impact (title, description, pos_neg, dimension)
+    VALUES (${impact.title}, ${impact.description}, ${impact.pos_neg}, ${impact.dimension});
+  `;
+}
+
+// ========== Read Functions ==========
+
+// Get all users
+export async function getAllUsers(client: any): Promise<User[]> {
+  return (await client.sql`SELECT * FROM Users`).rows;
+}
+
+// Get all questions
+export async function getAllQuestions(client: any): Promise<Question[]> {
+  return (await client.sql`SELECT * FROM Question`).rows;
+}
+
+// Get all answers
+export async function getAllAnswers(client: any): Promise<Answer[]> {
+  return (await client.sql`SELECT * FROM Answer`).rows;
+}
+
+// Get all impacts
+export async function getAllImpacts(client: any): Promise<Impact[]> {
+  return (await client.sql`SELECT * FROM Impact`).rows;
+}
+
+// ========== Update Functions ==========
+
+// Update a user
+export async function updateUser(user: User, client: any): Promise<void> {
+  await client.sql`
+    UPDATE Users SET 
+    username = ${user.username},
+    email = ${user.email},
+    password = ${user.password},
+    likelihood_thres = ${user.likelihood_thres},
+    impact_thres = ${user.impact_thres},
+    cost_thres = ${user.cost_thres}
+    WHERE id = ${user.id};
+  `;
+}
+
+// Update a question
+export async function updateQuestion(question: Question, client: any): Promise<void> {
+  await client.sql`
+    UPDATE Question SET 
+    question = ${question.question}
+    WHERE id = ${question.id};
+  `;
+}
+
+// Update an answer
+export async function updateAnswer(answer: Answer, client: any): Promise<void> {
+  await client.sql`
+    UPDATE Answer SET 
+    answer = ${answer.answer}
+    WHERE qid = ${answer.qid} AND uid = ${answer.uid};
+  `;
+}
+
+// Update an impact
+export async function updateImpact(impact: Impact, client: any): Promise<void> {
+  await client.sql`
+    UPDATE Impact SET 
+    title = ${impact.title},
+    description = ${impact.description},
+    pos_neg = ${impact.pos_neg},
+    dimension = ${impact.dimension}
+    WHERE id = ${impact.id};
+  `;
+}
+
+// ========== Delete Functions ==========
+
+// Delete a user
+export async function deleteUser(userId: number, client: any): Promise<void> {
+  await client.sql`
+    DELETE FROM Users WHERE id = ${userId};
+  `;
+}
+
+// Delete a question
+export async function deleteQuestion(questionId: number, client: any): Promise<void> {
+  await client.sql`
+    DELETE FROM Question WHERE id = ${questionId};
+  `;
+}
+
+// Delete an answer
+export async function deleteAnswer(qid: number, uid: number, client: any): Promise<void> {
+  await client.sql`
+    DELETE FROM Answer WHERE qid = ${qid} AND uid = ${uid};
+  `;
+}
+
+// Delete an impact
+export async function deleteImpact(impactId: number, client: any): Promise<void> {
+  await client.sql`
+    DELETE FROM Impact WHERE id = ${impactId};
+  `;
 }

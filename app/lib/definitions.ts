@@ -1,4 +1,4 @@
-// This file contains type definitions for your data.
+/* // This file contains type definitions for your data.
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
 // However, these types are generated automatically if you're using an ORM such as Prisma.
@@ -86,3 +86,85 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+ */
+
+
+
+// Users
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  likelihood_thres: number;
+  impact_thres: number;
+  cost_thres: number;
+}
+
+// Questions
+export interface Question {
+  id: number;
+  question: string;
+}
+
+// Answers
+export interface Answer {
+  qid: number; // Question ID
+  uid: number; // User ID
+  answer: string;
+}
+
+// Impacts
+export interface Impact {
+  id: number;
+  title: string;
+  description: string;
+  pos_neg: boolean;
+  dimension: string;
+}
+
+// Keywords
+export interface Keyword {
+  word: string;
+  iid: number; // Impact ID
+}
+
+// ChosenImpacts
+export interface ChosenImpact {
+  id: number;
+  uid: number; // User ID
+  iid: number; // Impact ID
+  temp_category: string;
+  likelihood: number;
+  impactfulness: number;
+}
+
+// LeadTos
+export interface LeadTo {
+  id: number;
+  ciid1: number; // ChosenImpact ID 1
+  ciid2: number; // ChosenImpact ID 2
+}
+
+// SelectedImpacts
+export interface SelectedImpact {
+  id: number;
+  ciid: number; // ChosenImpact ID
+}
+
+// Risks
+export interface Risk {
+  id: number;
+  siid: number; // SelectedImpact ID
+  description: string;
+}
+
+// Actions
+export interface Action {
+  id: number;
+  siid: number; // SelectedImpact ID
+  description: string;
+  cost_inaction: number;
+  cost_action: number;
+  selected: boolean;
+}
