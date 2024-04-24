@@ -1,5 +1,5 @@
-/* 'use server';
-
+'use server';
+/*
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
@@ -168,10 +168,11 @@ export async function insertUser(user: Omit<User, 'id'>, client: any): Promise<v
 }
 
 // Insert a new question
-export async function insertQuestion(question: Omit<Question, 'id'>, client: any): Promise<void> {
-  await client.sql`
+export async function insertQuestion(question: string): Promise<void> {
+  console.log("IS this working?")
+  await sql`
     INSERT INTO Question (question)
-    VALUES (${question.question});
+    VALUES (${question});
   `;
 }
 

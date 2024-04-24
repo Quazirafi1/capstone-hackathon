@@ -12,20 +12,20 @@ const users = [
 
 // Questions
 const questions = [
-  { id: 1, question: "What is your biggest challenge?" },
-  { id: 2, question: "How do you measure success?" },
-  { id: 3, question: "What strategies do you use to manage risks?" },
-  { id: 4, question: "How important is innovation in your business?" },
-  { id: 5, question: "What are the core values of your organization?" }
+  // { id: 1, question: "What is your biggest challenge?" },
+  // { id: 2, question: "How do you measure success?" },
+  // { id: 3, question: "What strategies do you use to manage risks?" },
+  // { id: 4, question: "How important is innovation in your business?" },
+  // { id: 5, question: "What are the core values of your organization?" }
 ];
 
 // Answers
 const answers = [
-  { qid: 1, uid: 1, answer: "Resource allocation" },
-  { qid: 2, uid: 1, answer: "Through KPIs" },
-  { qid: 3, uid: 2, answer: "Regular assessments" },
-  { qid: 4, uid: 2, answer: "Very important" },
-  { qid: 5, uid: 3, answer: "Integrity and transparency" }
+  // { qid: 1, uid: 1, answer: "Resource allocation" },
+  // { qid: 2, uid: 1, answer: "Through KPIs" },
+  // { qid: 3, uid: 2, answer: "Regular assessments" },
+  // { qid: 4, uid: 2, answer: "Very important" },
+  // { qid: 5, uid: 3, answer: "Integrity and transparency" }
 ];
 
 // Impacts
