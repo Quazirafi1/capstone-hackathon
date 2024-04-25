@@ -142,6 +142,7 @@ export async function getStakeholder(id: number) {
 }
 
 export async function getAllStakeholders() {
+  unstable_noStore();
   try {
     const data = await sql<Stakeholder>`SELECT * FROM Stakeholder`;
     console.log("getAllStakeholders successful");
@@ -155,10 +156,13 @@ export async function getAllStakeholders() {
 export async function insertStakeholder( name: string, description: string) {
   try {
     await sql`
-      INSERT INTO Stakeholder (id, name, description)
+      INSERT INTO Stakeholder ( name, description)
       VALUES ( ${name}, ${description});
     `;
     console.log("insertStakeholder successful for id:");
+
+    revalidatePath('/susaf/stakeholders');
+    redirect('/susaf/stakeholders');
   } catch (error) {
     console.error("Failed to insert stakeholder with id:");
     throw error;

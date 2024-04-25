@@ -28,16 +28,9 @@ export function StakeholderForm() {
 
     async function submitForm(prevState: any, formData: FormData) {
 
-        var name = undefined;
-        if (formData.get('name') != null){
-            name = formData.get('description') as string
-        }
-
-        var description = undefined;
-        if (formData.get('description') != null){
-            description = formData.get('description') as string
-        }
-
+        const name = formData.get('name') as string
+        const description = formData.get('description') as string
+ 
         await insertStakeholder(
             name,
             description
@@ -51,7 +44,7 @@ export function StakeholderForm() {
     const [state, dispatch] = useFormState(submitForm, initialState);
 
     return (
-        <div className="w-[60%] h-full">
+        <div className="w-full h-full">
             <form action={dispatch} >
                 <TextInput id='name' placeholder="Name" label='Name' input_width_percentage={80} />
                 <TextInput id='description' placeholder="Description" label='Description' input_width_percentage={80} />

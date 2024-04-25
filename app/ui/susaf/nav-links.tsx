@@ -14,7 +14,6 @@ import clsx from 'clsx';
 const links = [
   { name: 'Home', href: '/susaf', icon: HomeIcon },
   { name: 'Stakeholders', href: '/susaf/stakeholders', icon: HomeIcon },
-  { name: 'Example questionnaire', href: '/susaf/questionnaire/developers', icon: HomeIcon },
   { name: 'Chain of effects', href: '/susaf/chain_of_effects', icon: HomeIcon },
   { name: 'Ranking impacts', href: '/susaf/ranking_impacts', icon: HomeIcon },
   { name: 'Example assign action', href: '/susaf/assign?id=12', icon: HomeIcon },
