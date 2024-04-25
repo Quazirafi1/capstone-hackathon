@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import Column from '../ui/sortable_list/column';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Person, Columns } from '../ui/types'; // Assuming types.ts is in the same directory
+import { Person, Columns } from '../ui/types';
 
 export default function Home() {
   const [columns, setColumns] = useState<Columns>({

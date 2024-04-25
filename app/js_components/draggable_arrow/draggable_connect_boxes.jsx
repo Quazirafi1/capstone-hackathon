@@ -8,8 +8,11 @@ const connectPointStyle = {
   width: 15,
   height: 15,
   borderRadius: "50%",
-  background: "black"
+  background: "black",
+  cursor: "pointer",
+  zIndex: 1000
 };
+
 const connectPointOffset = {
   left: { left: 0, top: "50%", transform: "translate(-50%, -50%)" },
   right: { left: "100%", top: "50%", transform: "translate(-50%, -50%)" },
@@ -17,11 +20,12 @@ const connectPointOffset = {
   bottom: { left: "50%", top: "100%", transform: "translate(-50%, -50%)" }
 };
 
-const ConnectPointsWrapper = ({ boxId, handler, dragRef, boxRef }) => {
-  const ref1 = useRef();
 
+const ConnectPointsWrapper = ({ boxId, handler, boxRef }) => {
+  const ref1 = useRef();
   const [position, setPosition] = useState({});
   const [beingDragged, setBeingDragged] = useState(false);
+
   return (
     <React.Fragment>
       <div
@@ -38,16 +42,19 @@ const ConnectPointsWrapper = ({ boxId, handler, dragRef, boxRef }) => {
           e.dataTransfer.setData("arrow", boxId);
         }}
         onDrag={e => {
-          const { offsetTop, offsetLeft } = boxRef.current;
-          const { x, y } = dragRef.current.state;
+          if (!boxRef.current) {
+            console.log("boxRef is not available.");
+            return; // Exit the function if the ref isn't available
+          }
+          const rect = boxRef.current.getBoundingClientRect();
           setPosition({
             position: "fixed",
-            left: e.clientX - x - offsetLeft,
-            top: e.clientY - y - offsetTop,
+            left: e.clientX - rect.left,
+            top: e.clientY - rect.top,
             transform: "none",
             opacity: 0
           });
-        }}
+        }}        
         ref={ref1}
         onDragEnd={e => {
           setPosition({});
@@ -59,44 +66,42 @@ const ConnectPointsWrapper = ({ boxId, handler, dragRef, boxRef }) => {
   );
 };
 
+
 const boxStyle = {
   border: "1px solid black",
   position: "relative",
   padding: "20px 10px"
 };
 
-const Box = ({ text, handler, addArrow, setArrows, boxId }) => {
-  const dragRef = useRef();
-  const boxRef = useRef();
+const Box = ({ text, handlers, addArrow, boxId }) => {
+  const boxRef = useRef(); // This ref should be attached to the box div
+  const dragRef = useRef(); // This ref is specifically for the Draggable component
+
   return (
-    <Draggable
-      ref={dragRef}
-      onDrag={e => {
-        // console.log(e);
-        setArrows(arrows => [...arrows]);
-      }}
-    >
+    <Draggable nodeRef={dragRef}>
       <div
         id={boxId}
-        ref={boxRef}
+        ref={boxRef}  // Ensure this ref is attached to the actual box div
         style={boxStyle}
         onDragOver={e => e.preventDefault()}
         onDrop={e => {
-          if (e.dataTransfer.getData("arrow") === boxId) {
-            console.log(e.dataTransfer.getData("arrow"), boxId);
-          } else {
-            const refs = { start: e.dataTransfer.getData("arrow"), end: boxId };
+          const arrowData = e.dataTransfer.getData("arrow");
+          if (arrowData && arrowData !== boxId) {
+            const refs = { start: arrowData, end: boxId };
             addArrow(refs);
-            console.log("droped!", refs);
           }
         }}
       >
         {text}
-        <ConnectPointsWrapper {...{ boxId, handler, dragRef, boxRef }} />
+        {handlers.map(handler => (
+          <ConnectPointsWrapper key={`${boxId}-${handler}`} {...{ boxId, handler, boxRef }} />
+        ))}
       </div>
     </Draggable>
   );
 };
+
+
 
 export default function App() {
   const [arrows, setArrows] = useState([]);
@@ -105,15 +110,25 @@ export default function App() {
   };
   return (
     <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-      {/* two boxes */}
       <Box
-        text="drag my handler to second element"
-        {...{ addArrow, setArrows, handler: "right", boxId: "box2_1" }}
+        text="col1"
+        handlers={["right"]}  // Correctly passing as an array
+        addArrow={addArrow}
+        boxId="box2_1"
       />
       <Box
-        text="second element"
-        {...{ addArrow, setArrows, handler: "left", boxId: "box2_2" }}
+        text="col2"
+        handlers={["left", "right"]}  // Correctly passing two handlers for two sides
+        addArrow={addArrow}
+        boxId="box2_2"
       />
+      <Box
+        text="col3"
+        handlers={["left"]}  // Correctly passing as an array
+        addArrow={addArrow}
+        boxId="box2_3"
+      />
+
       {arrows.map(ar => (
         <Xarrow
           start={ar.start}
