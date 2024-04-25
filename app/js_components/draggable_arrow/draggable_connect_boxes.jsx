@@ -8,8 +8,11 @@ const connectPointStyle = {
   width: 15,
   height: 15,
   borderRadius: "50%",
-  background: "black"
+  background: "black",
+  cursor: "pointer",
+  zIndex: 1000
 };
+
 const connectPointOffset = {
   left: { left: 0, top: "50%", transform: "translate(-50%, -50%)" },
   right: { left: "100%", top: "50%", transform: "translate(-50%, -50%)" },
