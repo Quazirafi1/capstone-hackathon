@@ -5,8 +5,8 @@ import React from 'react';
 export default function ImpactList ({impacts}:{impacts:any[]}) {
    return(
     <div>{
-        impacts.map((impact:any) => {
-            return <h1>
+        impacts.map((impact:any, index:number) => {
+            return <h1 key={index}>
                 {impact.get('title')}
             </h1>
         }
