@@ -2,7 +2,6 @@ import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import type { Metadata } from "next";
 import InstallBootstrap from './components/InstallBootstrap';
-import 'bootstrap/dist/css/bootstrap.css';
 
 export const metadata: Metadata = {
   title: {
