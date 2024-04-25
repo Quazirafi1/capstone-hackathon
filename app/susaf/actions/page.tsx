@@ -8,7 +8,11 @@ import { testQuestionOperations } from "@/app/lib/actions";
 import { testAnswerOperations } from "@/app/lib/actions";
 import { testImpactOperations } from "@/app/lib/actions";
 import { testKeywordOperations } from "@/app/lib/actions";
+import { ActionsForm } from "@/app/ui/susaf/forms/actionsForm";
 export default async function Page() {
     
-    return <h1>Actions</h1>
+    return <div>
+        <h1>Actions</h1>
+        <ActionsForm />
+    </div>
 }

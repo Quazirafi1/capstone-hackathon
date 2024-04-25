@@ -4,7 +4,7 @@ import { TextInput } from "../ui/susaf/textinput";
 import { CheckBox } from "../ui/susaf/checkbox";
 import { ProgressBar } from "../ui/susaf/progressBar";
 import ImpactList from "../ui/susaf/list";
-import SortList from "../ui/susaf/sortable-list";
+// import SortList from "../ui/susaf/sortable-list";
 
 
 export default async function Page() {  
@@ -55,7 +55,7 @@ export default async function Page() {
         <TextInput id='test' placeholder='place' defaultValue="def" label="test" input_width_percentage={80} />
         <Button text='test' type='submit'/>
         <Card title='card title' children={<Button text='another'/>} leading={<Button text='leading'/>} trailing={<Button text='trailing'/>}/>
-        <SortList data={{
+        {/* <SortList data={{
             left: [
             { id: 1, name: 'John Doe', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
             { id: 3, name: 'Adam Smith', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
@@ -68,6 +68,6 @@ export default async function Page() {
                 { id: 2, name: 'Max Walters', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
                 { id: 4, name: 'Tom Johnson', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
             ]
-        }}/>
+        }}/> */}
     </div>
 }

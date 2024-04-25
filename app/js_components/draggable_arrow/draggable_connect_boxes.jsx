@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Xarrow from "react-xarrows";
 import Draggable from "react-draggable";
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 import "./styles.css";
 
