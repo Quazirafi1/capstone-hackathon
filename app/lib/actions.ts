@@ -142,6 +142,8 @@ export async function authenticate(
 
 
 
+
+
 // Typescript interfaces from definitions.ts
 import {
   User,
@@ -905,11 +907,12 @@ export async function updateAction(
   const query = `
     UPDATE Action SET
     ${setClause}
-    WHERE id = ${id}
+    WHERE id = ${id};
   `;
 
   try {
-    await sql`${query}`; // Use 'unsafe' if your library supports it, or another method to run raw SQL
+    console.log(query)
+    await sql.query(query); // Use 'unsafe' if your library supports it, or another method to run raw SQL
     console.log("updateAction successful for id:", id);
   } catch (error) {
     console.error("Failed to update action with id:", id, error);

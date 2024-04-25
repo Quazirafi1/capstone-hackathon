@@ -3,7 +3,7 @@ import { Button } from "../ui/susaf/button";
 import { TextInput } from "../ui/susaf/textinput";
 import { CheckBox } from "../ui/susaf/checkbox";
 import { ProgressBar } from "../ui/susaf/progressBar";
-import ImpactList from "../ui/susaf/list";
+import { ImpactList } from "../ui/susaf/list";
 // import SortList from "../ui/susaf/sortable-list";
 
 

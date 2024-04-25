@@ -13,6 +13,7 @@ export function TextInput({ id, label, placeholder, defaultValue, input_width_pe
             <div className={`w-[${input_width_percentage}%]`}>
                 <input
                     id={id}
+                    name={id}
                     className="peer block w-full rounded-md border border-gray-200 p-[9px] text-sm outline-2 placeholder:text-gray-500"
                     placeholder={placeholder}
                     defaultValue={defaultValue}
