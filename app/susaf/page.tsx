@@ -48,6 +48,6 @@ export default async function Page() {
 
         <TextInput id='test' placeholder='place' defaultValue="def" label="test" input_width_percentage={80} />
         <Button text='test' type='submit'/>
-        <Card title='card title' children={<Button text='another'/>} leading={<Button text='leading'/>} trailing={<CheckBox checked={true}/>}/>
+        <Card title='card title' children={<Button text='another'/>} leading={<Button text='leading'/>} trailing={<CheckBox id='2' defaultChecked={true}/>}/>
     </div>
 }
