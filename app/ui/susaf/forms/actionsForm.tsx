@@ -59,9 +59,9 @@ export function ActionsForm({ action }: { action: Action }) {
     const [state, dispatch] = useFormState(submitForm, initialState);
 
     return (
-        <div className="w-full h-full">
+        <div className="w-[60%] h-full">
             <h1>{action.id}</h1>
-            <h1>{action.id}</h1>
+            <p>{action.description}</p>
             <form action={dispatch} >
                 <TextInput id='cost_of_action' placeholder="Cost of action" label='Cost of action' input_width_percentage={80} />
                 {/* {state.errors?.cost_of_action &&
@@ -71,7 +71,7 @@ export function ActionsForm({ action }: { action: Action }) {
                         </p>
                     ))} */}
                 <TextInput id='cost_of_inaction' placeholder="Cost of inaction" label='Cost of inaction' input_width_percentage={80} />
-                <LargeTextInput id='notes' placeholder="Notes" />
+                <LargeTextInput id='notes' placeholder="Write your notes for your calculations here" />
                 <div className='p-4'>
                     <Button text="submit" type="submit" />
                 </div>

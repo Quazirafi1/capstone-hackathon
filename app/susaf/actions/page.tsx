@@ -36,7 +36,7 @@ export default async function Page({
     }
     
     const actionObject = await getAction(id)
-    return <div className="w-full h-full">
+    return <div className="w-full h-full center-items justify-center">
         <ActionsForm action={actionObject[0]} />
     </div>
 }
