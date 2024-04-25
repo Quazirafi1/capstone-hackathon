@@ -101,6 +101,12 @@ export interface User {
   cost_thres: number;
 }
 
+
+export interface Stakeholder{
+  id: number;
+  name : string;
+  description : string;
+}
 // Questions
 export interface Question {
   id: number;

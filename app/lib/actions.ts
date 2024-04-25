@@ -121,6 +121,91 @@ export async function deleteInvoice(id: string) {
 }
 */
 
+
+
+
+
+
+
+import { Stakeholder } from './definitions';
+//stakholders
+export async function getStakeholder(id: number) {
+  unstable_noStore();
+  try {
+    const data = await sql<Stakeholder>`SELECT * FROM Stakeholder WHERE id = ${id}`;
+    console.log("getStakeholder successful for id:", id);
+    return data.rows;
+  } catch (error) {
+    console.error("Failed to get stakeholder with id:", id, error);
+    throw error;
+  }
+}
+
+export async function getAllStakeholders() {
+  try {
+    const data = await sql<Stakeholder>`SELECT * FROM Stakeholder`;
+    console.log("getAllStakeholders successful");
+    return data.rows;
+  } catch (error) {
+    console.error("Failed to get all stakeholders", error);
+    throw error;
+  }
+}
+
+export async function insertStakeholder(id: number, name: string, description: string) {
+  try {
+    await sql`
+      INSERT INTO Stakeholder (id, name, description)
+      VALUES (${id}, ${name}, ${description});
+    `;
+    console.log("insertStakeholder successful for id:", id);
+  } catch (error) {
+    console.error("Failed to insert stakeholder with id:", id, error);
+    throw error;
+  }
+}
+
+export async function updateStakeholder(id: number, name: string, description: string) {
+  try {
+    await sql`
+      UPDATE Stakeholder SET 
+      name = ${name},
+      description = ${description}
+      WHERE id = ${id};
+    `;
+    console.log("updateStakeholder successful for id:", id);
+  } catch (error) {
+    console.error("Failed to update stakeholder with id:", id, error);
+    throw error;
+  }
+}
+
+export async function deleteStakeholder(id: number) {
+  try {
+    await sql` DELETE FROM Stakeholder WHERE id = ${id}; `;
+    console.log("deleteStakeholder successful for id:", id);
+    return { message: 'Deleted Stakeholder' };
+  } catch (error) {
+    console.error("Database Error: Failed to delete stakeholder with id:", id, error);
+    return { message: 'Database Error: Failed to Delete stakeholder ' + id };
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
