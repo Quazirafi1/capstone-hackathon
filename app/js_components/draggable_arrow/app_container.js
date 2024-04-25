@@ -1,5 +1,6 @@
 import React from "react";
 import DraggableConnectors from "./draggable_connect_boxes";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default () => (
   <div>
