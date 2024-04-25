@@ -152,15 +152,15 @@ export async function getAllStakeholders() {
   }
 }
 
-export async function insertStakeholder(id: number, name: string, description: string) {
+export async function insertStakeholder( name: string, description: string) {
   try {
     await sql`
       INSERT INTO Stakeholder (id, name, description)
-      VALUES (${id}, ${name}, ${description});
+      VALUES ( ${name}, ${description});
     `;
-    console.log("insertStakeholder successful for id:", id);
+    console.log("insertStakeholder successful for id:");
   } catch (error) {
-    console.error("Failed to insert stakeholder with id:", id, error);
+    console.error("Failed to insert stakeholder with id:");
     throw error;
   }
 }
