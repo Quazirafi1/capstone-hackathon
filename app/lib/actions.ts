@@ -1,6 +1,6 @@
 'use server';
 
-import { z } from 'zod';
+import { number, z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath, unstable_noStore } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -270,6 +270,69 @@ export async function getAllAnswers() {
   }
 }
 
+
+
+
+
+
+const AnswerFormSchema = z.object({
+  qid: z.number({
+    required_error: 'Question ID is required.',
+    invalid_type_error: 'Question ID must be a number.'
+  }),
+  uid: z.number({
+    required_error: 'User ID is required.',
+    invalid_type_error: 'User ID must be a number.'
+  }),
+  answer: z.string({
+    required_error: 'Answer text is required.',
+    invalid_type_error: 'Answer text must be a string.'
+  }).min(1, 'Answer text cannot be empty.')
+});
+
+export type AnswerFormState = {
+  errors?: {
+    qid?: string[];
+    uid?: string[];
+    answer?: string[];
+  };
+  message?: string | null;
+};
+
+
+export async function processAnswerSubmission(formData: FormData): Promise<AnswerFormState> {
+  const parsedData = {
+    qid: Number(formData.get('qid')),
+    uid: Number(formData.get('uid')),
+    answer: formData.get('answer') as string
+  };
+
+  const validation = AnswerFormSchema.safeParse(parsedData);
+
+  if (!validation.success) {
+    return {
+      errors: validation.error.flatten().fieldErrors,
+      message: 'Validation failed for one or more fields.'
+    };
+  }
+
+  try {
+    await insertAnswer(validation.data.qid, validation.data.uid, validation.data.answer);
+    console.log('Answer successfully submitted.');
+    return {
+      message: 'Answer successfully submitted.'
+    };
+  } catch (error) {
+    console.error('Error submitting answer:', error);
+    return {
+      message: 'Failed to submit answer due to a server error.'
+    };
+  }
+}
+
+
+
+
 export async function insertAnswer(qid: number, uid: number, answer: string) {
   try {
     await sql`
@@ -316,7 +379,7 @@ export async function getQuestion(id: number) {
   try {
     const data = await sql<Question>`SELECT * FROM Question WHERE id = ${id}`;
     console.log("getQuestion successful for id:", id);
-    return data.rows;
+    return data.rows[0];
   } catch (error) {
     console.error("Failed to get question with id:", id, error);
     throw error;
@@ -814,17 +877,39 @@ export async function insertAction(id: number, siid: number, description: string
   }
 }
 
-export async function updateAction(id: number, siid: number, description: string, cost_inaction: number, cost_action: number, selected: boolean) {
+export async function updateAction(
+  id: number,
+  siid?: number,
+  description?: string,
+  cost_inaction?: number,
+  cost_action?: number,
+  selected?: boolean
+) {
+  // Initialize the updates array to gather SQL fragments
+  const updates = [];
+  if (siid !== undefined) updates.push(`siid = ${siid}`);
+  if (description !== undefined) updates.push(`description = '${description}'`);
+  if (cost_inaction !== undefined) updates.push(`cost_inaction = ${cost_inaction}`);
+  if (cost_action !== undefined) updates.push(`cost_action = ${cost_action}`);
+  if (selected !== undefined) updates.push(`selected = ${selected}`);
+
+  // Check if there are any updates to make
+  if (updates.length === 0) {
+    throw new Error("No updates provided");
+  }
+
+  // Join the updates to form the SET part of the SQL query
+  const setClause = updates.join(', ');
+
+  // Build the SQL query
+  const query = `
+    UPDATE Action SET
+    ${setClause}
+    WHERE id = ${id}
+  `;
+
   try {
-    await sql`
-      UPDATE Action SET 
-      siid = ${siid},
-      description = ${description},
-      cost_inaction = ${cost_inaction},
-      cost_action = ${cost_action},
-      selected = ${selected}
-      WHERE id = ${id};
-    `;
+    await sql`${query}`; // Use 'unsafe' if your library supports it, or another method to run raw SQL
     console.log("updateAction successful for id:", id);
   } catch (error) {
     console.error("Failed to update action with id:", id, error);
