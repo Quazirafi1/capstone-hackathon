@@ -1,5 +1,5 @@
 import React from 'react';
-import PersonCard from './person-card';
+import PersonCard from '../sortable_list/person-card';
 import { Person } from '../types'; // Assuming types.ts is in the same directory
 
 interface ColumnProps {
@@ -11,9 +11,9 @@ interface ColumnProps {
   isDragging: boolean;
 }
 
-const Column: React.FC<ColumnProps> = ({ columnKey, list, handleDragOver, handleDrop, handleDragStart, isDragging }) => {
+export function SortableColumn({ columnKey, list, handleDragOver, handleDrop, handleDragStart, isDragging }: ColumnProps){
   return (
-    <div className="col"
+    <div className="col w-[30%]"
       onDragOver={handleDragOver}
       onDrop={(e) => handleDrop(e, columnKey)}
     >
@@ -31,5 +31,3 @@ const Column: React.FC<ColumnProps> = ({ columnKey, list, handleDragOver, handle
     </div>
   );
 };
-
-export default Column;

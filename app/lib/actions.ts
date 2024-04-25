@@ -683,7 +683,9 @@ export async function getChosenImpact(id: number) {
 export async function getAllChosenImpacts() {
   unstable_noStore();
   try {
-    const data = await sql<ChosenImpact>`SELECT * FROM ChosenImpact`;
+    const data = await sql<ChosenImpact>`SELECT ChosenImpact.*, Impact.*
+    FROM ChosenImpact
+    JOIN Impact ON ChosenImpact.id = Impact.id;`;
     console.log("getAllChosenImpacts successful");
     return data.rows;
   } catch (error) {

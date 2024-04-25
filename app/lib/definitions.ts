@@ -129,21 +129,20 @@ export interface Impact {
   dimension: string;
 }
 
-// Keywords
-export interface Keyword {
-  word: string;
-  iid: number; // Impact ID
-}
-
 // ChosenImpacts
-export interface ChosenImpact {
-  id: number;
+export interface ChosenImpact extends Impact{
   uid: number; // User ID
   iid: number; // Impact ID
   temp_category: string;
   likelihood: number;
   impactfulness: number;
 }
+// Keywords
+export interface Keyword {
+  word: string;
+  iid: number; // Impact ID
+}
+
 
 // LeadTos
 export interface LeadTo {

@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useRef, useState } from 'react';
-import Column from '@/app/ui/sortable_list/column';
+import Column from '@/app/ui/susaf/sortable_col';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Person, Columns } from '@/app/ui/types'; // Assuming types.ts is in the same directory
 
-export default function SortList({data} : {data:Columns}) {
-  const [columns, setColumns] = useState<Columns>(data);
+export default function SortList({impacts} : {impacts: ChosenImpact[]}) {
 
   const dragPerson = useRef<{ index: number; column: string }>({ index: -1, column: '' });
   const [isDragging, setIsDragging] = useState<boolean>(false);

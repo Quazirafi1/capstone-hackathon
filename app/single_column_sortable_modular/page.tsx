@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useRef, useState } from 'react';
-import Column from '../ui/sortable_list/column';
-// import 'bootstrap/dist/css/bootstrap.css';
+import Column from '../ui/susaf/sortable_col';
+import 'bootstrap/dist/css/bootstrap.css';
 import { Person, Columns } from '../ui/types';
 
 export default function Home() {

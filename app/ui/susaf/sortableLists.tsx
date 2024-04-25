@@ -1,20 +1,47 @@
 'use client'
 
 import React, { useRef, useState } from 'react';
-import Column from '@/app/ui/sortable_list/column';
+import { SortableColumn } from '@/app/ui/susaf/sortable_col';
 // import 'bootstrap/dist/css/bootstrap.css';
 import { Person, Columns } from '@/app/ui/types'; // Assuming types.ts is in the same directory
+import { ChosenImpact } from '@/app/lib/definitions';
 
-export default function SortList() {
-  const [columns, setColumns] = useState<Columns>({
-    left: [
-      { id: 1, name: 'John Doe', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-      { id: 3, name: 'Adam Smith', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-    ],
-    right: [
-      { id: 2, name: 'Max Walters', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-      { id: 4, name: 'Tom Johnson', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-    ]
+export default function SortableLists({impacts} : {impacts: ChosenImpact[]}) {
+  const immediate = []
+  const enabling = []
+  const structural = []
+
+  impacts.forEach((impact) => {
+    if(impact.temp_category=='immediate'){
+      immediate.push({
+        id: impact.id,
+        name: impact.title,
+        content: impact.description,
+        sets: '3x10'
+      })
+    }
+    if(impact.temp_category=='enabling'){
+      enabling.push({
+        id: impact.id,
+        name: impact.title,
+        content: impact.description,
+        sets: '3x10'
+      })
+    }
+    if(impact.temp_category=='structural'){
+      structural.push({
+        id: impact.id,
+        name: impact.title,
+        content: impact.description,
+        sets: '3x10'
+      })
+    }
+  })
+
+  const [columns, setColumns] = useState({
+    immediate: immediate,
+    enabling: enabling,
+    structural: structural,
   });
 
   const dragPerson = useRef<{ index: number; column: string }>({ index: -1, column: '' });
@@ -60,21 +87,18 @@ export default function SortList() {
   };
 
   return (
-    <main className="container mt-5">
-      <h1 className="text-center mb-4">Drag and Sort Participants</h1>
-      <div className="row">
-        {Object.entries(columns).map(([key, list]) => (
-          <Column
-            key={key}
-            columnKey={key}
-            list={list}
-            handleDragOver={handleDragOver}
-            handleDrop={handleDrop}
-            handleDragStart={handleDragStart}
-            isDragging={isDragging}
-          />
-        ))}
-      </div>
-    </main>
+    <div className="flex row w-full">
+      {Object.entries(columns).map(([key, list]) => (
+        <SortableColumn
+          key={key}
+          columnKey={key}
+          list={list}
+          handleDragOver={handleDragOver}
+          handleDrop={handleDrop}
+          handleDragStart={handleDragStart}
+          isDragging={isDragging}
+        />
+      ))}
+    </div>
   );
 }

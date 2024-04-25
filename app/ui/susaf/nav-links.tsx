@@ -12,11 +12,9 @@ import clsx from 'clsx';
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'Home', href: '/susaf', icon: HomeIcon },
   { name: 'Stakeholders', href: '/susaf/stakeholders', icon: HomeIcon },
   { name: 'Chain of effects', href: '/susaf/chain_of_effects', icon: HomeIcon },
   { name: 'Ranking impacts', href: '/susaf/ranking_impacts', icon: HomeIcon },
-  { name: 'Example assign action', href: '/susaf/assign?id=12', icon: HomeIcon },
   { name: 'Final actions', href: '/susaf/actions', icon: HomeIcon },
 
 ];

@@ -21,10 +21,10 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, handleDragStart, column
         <h5 className="mb-0">{person.name}</h5>
         <small>{person.content}</small>
       </div>
-      <div>
+      {/* <div>
         <button className="btn btn-info btn-sm mx-1">Edit</button>
         <button className="btn btn-danger btn-sm">Delete</button>
-      </div>
+      </div> */}
     </div>
   );
 };

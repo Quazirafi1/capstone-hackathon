@@ -1,3 +1,5 @@
 export default async function Page() {
-    return <h1>Chain of effects</h1>
+    return <div>
+        test
+    </div>
 }
