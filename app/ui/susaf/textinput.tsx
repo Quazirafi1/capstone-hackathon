@@ -1,6 +1,6 @@
 "use client";
 
-export default function TextInput({ id, label, placeholder, defaultValue, input_width_percentage }: { id: string, label?: string, placeholder: string, defaultValue?: string, input_width_percentage?: number }) {
+export function TextInput({ id, label, placeholder, defaultValue, input_width_percentage }: { id: string, label?: string, placeholder: string, defaultValue?: string, input_width_percentage?: number }) {
     input_width_percentage = input_width_percentage ?? 100;
 
     return (
