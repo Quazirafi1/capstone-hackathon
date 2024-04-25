@@ -5,13 +5,12 @@ import React from 'react';
 export default function ImpactList ({impacts}:{impacts:any[]}) {
    return(
     <div>{
-        impacts.map((impact:Impact) => {
-            impact;
+        impacts.map((impact:any) => {
             return <h1>
-                impact.title
+                {impact.get('title')}
             </h1>
         }
-
+        
         ) 
         }
       
