@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { useFormState } from "react-dom";
-import { updateAction } from "@/app/lib/actions";
+import { insertStakeholder, updateAction } from "@/app/lib/actions";
 import { Button } from "../button";
 import { TextInput } from "../textinput";
 import { LargeTextInput } from "../largeTextInput";
@@ -24,7 +24,7 @@ import { redirect } from 'next/navigation';
 
 // const UpadteAction = FormSchema.omit({ id: true });
 
-export function StakeholderForm({ stakeholders }: { stakeholders: Stakeholder[] }) {
+export function StakeholderForm() {
 
     async function submitForm(prevState: any, formData: FormData) {
 
@@ -39,7 +39,6 @@ export function StakeholderForm({ stakeholders }: { stakeholders: Stakeholder[] 
         }
 
         await insertStakeholder(
-            id,
             name,
             description
         )
