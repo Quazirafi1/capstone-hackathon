@@ -1,5 +1,5 @@
 import { Impact } from '@/app/lib/definitions';
-import React from 'react';
+// import React from 'react';
 
 //should get a list of type Impact
 export default function ImpactList ({impacts}:{impacts:any[]}) {

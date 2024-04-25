@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import Column from '@/app/ui/sortable_list/column';
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
 import { Person, Columns } from '@/app/ui/types'; // Assuming types.ts is in the same directory
 
 export default function SortList() {
