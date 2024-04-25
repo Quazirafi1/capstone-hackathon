@@ -3,6 +3,8 @@
 export function TextInput({ id, label, placeholder, defaultValue, input_width_percentage }: { id: string, label?: string, placeholder: string, defaultValue?: string, input_width_percentage?: number }) {
     input_width_percentage = input_width_percentage ?? 100;
 
+    console.log(input_width_percentage);
+
     return (
         <div className="relative flex items-center p-4">
             {label && (
