@@ -1,13 +1,26 @@
-.demo1 {
-    font-family: sans-serif;
-    text-align: center;
+/* styles.css */
+.container {
+    display: flex;
+    justify-content: space-around; /* Changed from 'space-evenly' to 'space-around' for better spacing */
+    position: relative; /* Ensuring positioning context */
   }
   
-  .connectPoint {
-    opacity: 0.2;
+  .box {
+    border: 1px solid black;
+    padding: 20px 10px;
+    position: absolute; /* Positioned absolutely within the container */
+    top: 50px; /* Adjust as needed */
   }
   
-  .connectPoint:hover {
-    opacity: 0.6;
+  .box:first-child {
+    left: 20px; /* Adjust position for the first box */
+  }
+  
+  .box:nth-child(2) {
+    left: calc(50% - 60px); /* Center box */
+  }
+  
+  .box:last-child {
+    right: 20px; /* Adjust position for the third box */
   }
   
