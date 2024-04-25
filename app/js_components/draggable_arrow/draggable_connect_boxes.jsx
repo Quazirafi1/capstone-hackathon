@@ -1,7 +1,10 @@
 import React, { useRef, useState } from "react";
 import Xarrow from "react-xarrows";
 import Draggable from "react-draggable";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import "./styles.css";
+
 
 const connectPointStyle = {
   position: "absolute",
@@ -44,7 +47,7 @@ const ConnectPointsWrapper = ({ boxId, handler, boxRef }) => {
         onDrag={e => {
           if (!boxRef.current) {
             console.log("boxRef is not available.");
-            return; // Exit the function if the ref isn't available
+            return;
           }
           const rect = boxRef.current.getBoundingClientRect();
           setPosition({
@@ -59,9 +62,10 @@ const ConnectPointsWrapper = ({ boxId, handler, boxRef }) => {
         onDragEnd={e => {
           setPosition({});
           setBeingDragged(false);
+          e.dataTransfer.clearData(); // Ensure data is cleared after drag
         }}
       />
-      {beingDragged ? <Xarrow start={boxId} end={ref1} /> : null}
+      {beingDragged && <Xarrow start={boxId} end={ref1.current} />}
     </React.Fragment>
   );
 };
@@ -103,39 +107,42 @@ const Box = ({ text, handlers, addArrow, boxId }) => {
 
 
 
-export default function App() {
+const App = () => {
   const [arrows, setArrows] = useState([]);
-  const addArrow = ({ start, end }) => {
-    setArrows([...arrows, { start, end }]);
-  };
-  return (
-    <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-      <Box
-        text="col1"
-        handlers={["right"]}  // Correctly passing as an array
-        addArrow={addArrow}
-        boxId="box2_1"
-      />
-      <Box
-        text="col2"
-        handlers={["left", "right"]}  // Correctly passing two handlers for two sides
-        addArrow={addArrow}
-        boxId="box2_2"
-      />
-      <Box
-        text="col3"
-        handlers={["left"]}  // Correctly passing as an array
-        addArrow={addArrow}
-        boxId="box2_3"
-      />
 
-      {arrows.map(ar => (
+  const rowData = [
+    ["dataC11", "dataC21", "dataC31"],
+    ["dataC12", "dataC22", "dataC32"],
+    ["dataC13", "dataC23", "dataC33"],
+    ["dataC14", "dataC24", "dataC34"]
+  ];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", alignItems: "center" }}>
+      {rowData.map((row, rowIndex) => (
+        <div key={rowIndex} style={{ display: "flex", justifyContent: "space-evenly", width: "100%" }}>
+          {row.map((cell, colIndex) => (
+            <Box
+              key={`cell-${rowIndex}-${colIndex}`}
+              text={cell}
+              handlers={colIndex === 0 ? ["right"] : colIndex === row.length - 1 ? ["left"] : ["left", "right"]}
+              addArrow={(arrow) => setArrows([...arrows, arrow])}
+              boxId={`cell-${rowIndex}-${colIndex}`}
+            />
+          ))}
+        </div>
+      ))}
+      {arrows.map((arrow, index) => (
         <Xarrow
-          start={ar.start}
-          end={ar.end}
-          key={ar.start + "-." + ar.start}
+          start={arrow.start}
+          end={arrow.end}
+          key={index}
         />
       ))}
     </div>
   );
-}
+};
+
+
+export default App;
+
