@@ -1,3 +1,3 @@
 export default async function Page() {
-    return <h1>Assign</h1>
+    return <h1>Chain of effects</h1>
 }

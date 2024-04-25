@@ -1,3 +1,3 @@
 export default async function Page() {
-    return <h1>Assign / risk</h1>
+    return <h1>Home</h1>
 }
