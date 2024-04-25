@@ -285,6 +285,33 @@ async function seedLeadTos(client){
   }
 }
 
+
+
+
+async function seedStakeholder(client){
+  try{
+    // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
+    const createTable = await client.sql`
+        CREATE TABLE IF NOT EXISTS Stakeholder (
+          id SERIAL PRIMARY KEY,
+          name varchar(100),
+          description varchar(100)
+      );
+    `;
+
+    console.log(`Created "Stakholder" table`);
+    }
+
+    catch (error) {
+      console.error('Error creating stakeholer table', error);
+      throw error;
+    }
+  }
+
+
+
+
 async function seedSelectedImpacts(client){
   try{
     // await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
@@ -412,6 +439,7 @@ async function main() {
   await seedSelectedImpacts(client);
   await seedRisks(client);
   await seedActions(client);
+  await seedStakeholder(client);
 
   await client.end();
 }
