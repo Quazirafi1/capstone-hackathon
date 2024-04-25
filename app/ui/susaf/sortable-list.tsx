@@ -1,21 +1,12 @@
 'use client'
 
 import React, { useRef, useState } from 'react';
-import Column from '../ui/sortable_list/column';
+import Column from '@/app/ui/sortable_list/column';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Person, Columns } from '../ui/types'; // Assuming types.ts is in the same directory
+import { Person, Columns } from '@/app/ui/types'; // Assuming types.ts is in the same directory
 
-export default function Home() {
-  const [columns, setColumns] = useState<Columns>({
-    left: [
-      { id: 1, name: 'John Doe', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-      { id: 3, name: 'Adam Smith', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-    ],
-    right: [
-      { id: 2, name: 'Max Walters', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-      { id: 4, name: 'Tom Johnson', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', sets: '3x10' },
-    ]
-  });
+export default function SortList({data} : {data:Columns}) {
+  const [columns, setColumns] = useState<Columns>(data);
 
   const dragPerson = useRef<{ index: number; column: string }>({ index: -1, column: '' });
   const [isDragging, setIsDragging] = useState<boolean>(false);
